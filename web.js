@@ -13,7 +13,6 @@ var output = fs.readFileSync('index.html');
 
 app.get('/', function(request, response) {
   response.send(output.toString('utf8'));
->>>>>>> 86ad39220997d50e6cb6fa39769eeef3eb61df17
 });
 
 var port = process.env.PORT || 5000;
