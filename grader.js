@@ -64,6 +64,20 @@ var clone = function(fn) {
     return fn.bind({});
 };
 
+var checkUrl = function(url, checksfile) {
+    rest.get(url).on('complete', function(data) {
+        $ = cheerio.load(data);
+        var checks = loadChecks(checksfile).sort();
+        var out = {};
+        for(var ii in checks) {
+            var present = $(checks[ii]).length > 0;
+            out[checks[ii]] = present;
+        }
+        var outJson = JSON.stringify(out, null, 4);
+        console.log(outJson);
+    });
+}
+
 if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
@@ -71,16 +85,12 @@ if(require.main == module) {
         .option('-u, --url <url>', 'URL to webpage', URL_DEFAULT)
         .parse(process.argv);
     if(program.url){
-	var url = program.url.toString();
-	rest.get(url).on('complete', checkHtmlFile(program.url, program.checks));
-        var outJson = JSON.stringify(checkJson, null, 4);
+	checkUrl(program.url, program.checks);
     }
     else{
 	var checkJson = checkHtmlFile(program.file, program.checks);
-	var outJson = JSON.stringify(checkJson, null, 4);
-    }
-    
-    console.log(outJson);
+	var outJson = JSON.stringify(checkJson, null, 4); 
+	console.log(outJson);
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }
