@@ -68,8 +68,15 @@ if(require.main == module) {
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
         .option('-u, --url <html_file>', 'Path to webpage', clone(assertFileExists), HTMLFILE_DEFAULT)
         .parse(process.argv);
-    var checkJson = checkHtmlFile(program.file, program.checks);
-    var outJson = JSON.stringify(checkJson, null, 4);
+    if(program.url){
+	var url = rest.get(url).on('complete', checkHtmlFile(program.url, program.checks));
+        var outJson = JSON.stringify(checkJson, null, 4);
+    }
+    else{
+	var checkJson = checkHtmlFile(program.file, program.checks);
+	var outJson = JSON.stringify(checkJson, null, 4);
+    }
+    
     console.log(outJson);
 } else {
     exports.checkHtmlFile = checkHtmlFile;
