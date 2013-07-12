@@ -57,16 +57,11 @@ var checkHtmlFile = function(htmlfile, checksfile) {
     }
     return out;
 };
-
-var clone = function(fn) {
-    // Workaround for commander.js issue.
-    // http://stackoverflow.com/a/6772648
-    return fn.bind({});
-};
-
+//Function to check if url is submitted
 var checkUrl = function(url, checksfile) {
-    rest.get(url).on('complete', function(data) {
-        $ = cheerio.load(data);
+    rest.get(url).on('complete', function(data) { //Use restler for asynchromous download of the page
+        //Do the same as an index.html file submitted
+	$ = cheerio.load(data);
         var checks = loadChecks(checksfile).sort();
         var out = {};
         for(var ii in checks) {
@@ -76,7 +71,15 @@ var checkUrl = function(url, checksfile) {
         var outJson = JSON.stringify(out, null, 4);
         console.log(outJson);
     });
-}
+};
+
+var clone = function(fn) {
+    // Workaround for commander.js issue.
+    // http://stackoverflow.com/a/6772648
+    return fn.bind({});
+};
+
+
 
 if(require.main == module) {
     program
